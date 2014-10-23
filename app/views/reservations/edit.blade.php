@@ -1,31 +1,33 @@
 @extends('templates.default')
 
 @section('content')
-<h1 class="page-header">New reservation</h1>
+<h1 class="page-header">Modify reservation</h1>
 
 <div class="row">
 	<div class="col-md-6">
-			{{ Form::open(array('route' => 'reservations.store')) }}
+			
+			{{ Form::model($reservation, array('route' => array('reservations.update', $reservation->id), 'method' => 'patch')) }}
+
 			<div class="form-group">
 				{{ Form::label('item_id', 'Item:') }}
 				{{ Form::select('item_id', Item::lists('name', 'id'), NULL, array('class' => 'form-control')) }}
 				{{ $errors->first('item_id') }}
 			</div>
 			<div class="form-group">
-				{{ Form::label('email', 'User email:') }}
-				{{ Form::text('email', NULL, array('class' => 'form-control', 'placeholder' => 'your corporative email goes here')) }}
-				{{ $errors->first('email') }}
+				{{ Form::label('user_id', 'User:') }}
+				{{ Form::select('user_id', User::lists('first_name', 'id'), NULL, array('class' => 'form-control')) }}
+				{{ $errors->first('user_id') }}
 			</div>
 	</div>
 	<div class="col-md-6">
 			<div class="form-group">
 				{{ Form::label('start_date', 'From') }}
-				{{ Form::text('start_date', NULL, array('class' => 'form-control', 'placeholder' => 'here you tell us when you need it')) }}
+				{{ Form::text('start_date', NULL, array('class' => 'form-control')) }}
 				{{ $errors->first('start_date') }}
 			</div>
 			<div class="form-group">
 				{{ Form::label('end_date', 'To') }}
-				{{ Form::text('end_date', NULL, array('class' => 'form-control', 'placeholder' => 'and when you\'re gonna return it')) }}
+				{{ Form::text('end_date', NULL, array('class' => 'form-control')) }}
 				{{ $errors->first('end_date') }}
 			</div>
 	</div>
@@ -34,7 +36,7 @@
 	<div class="col-md-12">
 		<div class="form-group">
 				{{ Form::label('message', 'Message') }}
-				{{ Form::textarea('message', NULL, array('class' => 'form-control', 'placeholder' => 'please describe why you need the item and how you want it to be set up')) }}
+				{{ Form::textarea('message', NULL, array('class' => 'form-control')) }}
 				{{ $errors->first('message') }}
 			</div>
 			<div>

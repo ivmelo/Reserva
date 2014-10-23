@@ -39,21 +39,39 @@ class ReservationsController extends \BaseController {
 	public function store()
 	{
 		//
-		$user = User::find(Input::get('user_id'));
-		$item = Item::find(Input::get('item_id'));
+		$validator = Validator::make(
+			Input::all(),
+			array (
+				'email' => 'required|email|exists:users',
+				'item_id' => 'required',
+				'start_date' => 'required|date',
+				'end_date' => 'required|date',
+				'message' => 'required|max:1000',
+			)
+		);
 
-		$reservation = new Reservation();
-		$reservation->user()->associate($user);
-		$reservation->item()->associate($item);
-		$reservation->start_date = new DateTime(Input::get('start_date'));
-		$reservation->end_date = new DateTime(Input::get('end_date'));
-		$reservation->message = Input::get('message');
-		$reservation->status = 1;
-		$reservation->save();
+		if($validator->fails()) {
+			return Redirect::route('reservations.create')->withErrors($validator)->withInput();
+		} else {
+			$user =	User::where('email', '=', Input::get('email'))->first();
+			$item = Item::find(Input::get('item_id'));
 
-		Session::flash('message', 'Created with success!');
+			$reservation = new Reservation();
+			$reservation->user()->associate($user);
+			$reservation->item()->associate($item);
+			$reservation->start_date = new DateTime(Input::get('start_date'));
+			$reservation->end_date = new DateTime(Input::get('end_date'));
+			$reservation->message = Input::get('message');
+			$reservation->status = 1;
+			$reservation->save();
 
-		return Redirect::route('reservations.index');
+			Session::flash('message', 'Created with success!');
+
+			return Redirect::route('reservations.index');
+		}
+
+
+		
 	}
 
 
@@ -66,6 +84,8 @@ class ReservationsController extends \BaseController {
 	public function show($id)
 	{
 		//
+		$reservation = Reservation::find($id);
+		return View::make('reservations.show', compact('reservation'));
 	}
 
 
@@ -78,6 +98,8 @@ class ReservationsController extends \BaseController {
 	public function edit($id)
 	{
 		//
+		$reservation = Reservation::find($id);
+		return View::make('reservations.edit', compact('reservation'));
 	}
 
 
@@ -90,6 +112,36 @@ class ReservationsController extends \BaseController {
 	public function update($id)
 	{
 		//
+		$validator = Validator::make(
+			Input::all(),
+			array (
+				'user_id' => 'required',
+				'item_id' => 'required',
+				'start_date' => 'required|date',
+				'end_date' => 'required|date',
+				'message' => 'required|max:1000',
+			)
+		);
+
+		if($validator->fails()) {
+			return Redirect::route('reservations.edit', $id)->withErrors($validator)->withInput();
+		} else {
+			$user = User::find(Input::get('user_id'));
+			$item = Item::find(Input::get('item_id'));
+
+			$reservation = Reservation::find($id);
+			$reservation->user()->associate($user);
+			$reservation->item()->associate($item);
+			$reservation->start_date = new DateTime(Input::get('start_date'));
+			$reservation->end_date = new DateTime(Input::get('end_date'));
+			$reservation->message = Input::get('message');
+			$reservation->status = 1;
+			$reservation->save();
+
+			Session::flash('message', 'Updated with success!');
+
+			return Redirect::route('reservations.index');
+		}
 	}
 
 
@@ -102,6 +154,12 @@ class ReservationsController extends \BaseController {
 	public function destroy($id)
 	{
 		//
+		$reservation = Reservation::find($id);
+		$reservation->delete();
+
+		Session::flash('message', 'Deleted with success!');
+
+		return Redirect::route('reservations.index');
 	}
 
 

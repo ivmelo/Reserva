@@ -15,19 +15,18 @@ Route::resource('users', 'UsersController');
 
 Route::resource('reservations', 'ReservationsController');
 
-Route::resource('auth', 'RequestsController');
+Route::resource('items', 'ItemsController');
 
-Route::get('login', 'SessionsController@create');
-Route::get('logout', 'SessionsController@destroy');
+//Route::resource('auth', 'RequestsController');
+
+/*Route::get('login', 'SessionsController@create');
+Route::get('logout', 'SessionsController@destroy');*/
 
 Route::get('/', function()
 {
-	//return View::make('hello');
 
-	//$user = User::find('1');
+	//return User::count();
 
-	//return $user->reservations;
-
-	return User::count();
+	return View::make('mastertemplate');
 
 });

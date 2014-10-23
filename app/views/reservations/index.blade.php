@@ -1,35 +1,48 @@
-<h1>All requests</h1>
+@extends('templates.default')
+
+@section('content')
+
+{{ HTML::link('reservations/create', 'Make a reservation', array('class' => 'btn btn-primary pull-right')) }}
+<h1 class="page-header">Reservations</h1>
 
 @if (Session::get('message'))
-<p style="color: green">{{ Session::get('message') }}</p>
+<div class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+  <strong>Hey!</strong> {{ Session::get('message') }}
+</div>
 @endif
 
-<table>
+<div class="table-responsive">
+<table class="table table-striped">
+	<thead>
 	<tr>
+		<th>#id</th>
 		<th>Item</th>
 		<th>From</th>
 		<th>To</th>
 		<th>Obs</th>
 		<th>User</th>
-		<th>Created</th>
-		<th>Updated</th>
 		<th>Status</th>
 		<th>Actions</th>
 	</tr>
+	</thead>
 
-@foreach($reservations as $reservation)
+	<tbody>
+	@foreach($reservations as $reservation)
 	<tr>
+		<td>{{ $reservation->id }}</td>
 		<td>{{ $reservation->item->name }}</td>
 		<td>{{ $reservation->start_date }}</td>
 		<td>{{ $reservation->end_date }}</td>
-		<td>{{ $reservation->message }}</td>
+		<td>{{ Str::words($reservation->message, 8) }}</td>
 		<td>{{ $reservation->user->first_name }} {{ $reservation->user->last_name }}</td>
-		<td>{{ $reservation->created_at }}</td>
-		<td>{{ $reservation->updated_at }}</td>
-		<td>{{ $reservation->status }}</td>
-		<td>{{ HTML::link('reservations/' . $reservation->id . '/edit', 'edit') }} {{ HTML::link('reservations/' . $reservation->id, 'view') }}</td>
+		<td><span class="badge">{{ $reservation->status }}</span></td>
+		<td>{{ HTML::link('reservations/' . $reservation->id, 'View', array('class' => 'btn btn-sm btn-primary')) }}</td>
 	</tr>
-@endforeach
+	@endforeach
+	</tbody>
 </table>
+</div>
 {{ $reservations->links() }}
-{{ HTML::link('reservations/create', 'Make a reservation') }}
+
+@stop

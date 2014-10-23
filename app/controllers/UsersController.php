@@ -9,7 +9,6 @@ class UsersController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
 		$users = User::paginate(30);
 		return View::make('users.index', ['users' => $users]);
 	}
@@ -22,7 +21,6 @@ class UsersController extends \BaseController {
 	 */
 	public function create()
 	{
-		//
 		return View::make('users.create');
 	}
 
@@ -34,20 +32,33 @@ class UsersController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
-		$user = new User();
-		$user->first_name = Input::get('first_name');
-		$user->last_name = Input::get('last_name');
-		$user->email = Input::get('email');
-		$user->is_admin = FALSE;
-		if (Input::has('is_admin'))
-			$user->is_admin = Input::get('is_admin');
-		$user->save();
+		$validator = Validator::make(
+			Input::all(),
+			array(
+				'first_name' => 'required|max:64',
+				'last_name' => 'required|max:64',
+				'email' => 'required|email|unique:users'
+			)
+		);
 
-		Session::flash('message', 'Created with success!');
+		if ($validator->fails()) {
+			// $messages = $validator->messages();
+			// print_r ($messages->get('first_name'));
+			return Redirect::route('users.create')->withErrors($validator)->withInput();
+		} else {
 
-		return Redirect::route('users.index');
-		
+			$user = new User();
+			$user->first_name = Input::get('first_name');
+			$user->last_name = Input::get('last_name');
+			$user->email = Input::get('email');
+			$user->is_admin = FALSE;
+			if (Input::has('is_admin'))
+				$user->is_admin = Input::get('is_admin');
+			$user->save();
+			Session::flash('message', 'Created with success!');
+			return Redirect::route('users.index');
+		}
+
 	}
 
 
@@ -59,7 +70,6 @@ class UsersController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
 		$user = User::find($id);
 		return View::make('users.show', compact('user'));
 	}
@@ -73,7 +83,6 @@ class UsersController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
 		$user = User::find($id);
 		return View::make('users.edit', ['user' => $user]);
 	}
@@ -87,19 +96,34 @@ class UsersController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
-		$user = User::find($id);
-		$user->first_name = Input::get('first_name');
-		$user->last_name = Input::get('last_name');
-		$user->email = Input::get('email');
-		$user->is_admin = FALSE;
-		if (Input::has('is_admin'))
-			$user->is_admin = Input::get('is_admin');
-		$user->save();
+		// Set validation rules
+		$validator = Validator::make(
+			Input::all(),
+			array(
+				'first_name' => 'required|max:64',
+				'last_name' => 'required|max:64',
+				'email' => 'required|email'
+			)
+		);
 
-		Session::flash('message', 'Edited with success!');
+		// If the validation fails
+		if ($validator->fails()) {
+			// $messages = $validator->messages();
+			// print_r ($messages->get('first_name'));
+			return Redirect::route('users.edit', $id)->withErrors($validator)->withInput();
+		} else {
 
-		return Redirect::route('users.index');
+			$user = User::find($id);
+			$user->first_name = Input::get('first_name');
+			$user->last_name = Input::get('last_name');
+			$user->email = Input::get('email');
+			$user->is_admin = FALSE;
+			if (Input::has('is_admin'))
+				$user->is_admin = Input::get('is_admin');
+			$user->save();
+			Session::flash('message', 'Edited with success!');
+			return Redirect::route('users.index');
+		}
 	}
 
 
@@ -111,7 +135,18 @@ class UsersController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		// Finds the user
+		$user = User::find($id);
+		// Delete all user's reservations
+		foreach ($user->reservations as $reservation) {
+			$reservation->delete();
+		}
+		// Delete the user
+		$user->delete();
+
+		// Set flash message and redirect to index page
+		Session::flash('message', 'User deleted successfully!');
+		return Redirect::route('users.index');
 	}
 
 
