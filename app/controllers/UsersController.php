@@ -54,6 +54,7 @@ class UsersController extends \BaseController {
 			$user->is_admin = FALSE;
 			if (Input::has('is_admin'))
 				$user->is_admin = Input::get('is_admin');
+				$user->password = Hash::make(Input::get('password'));
 			$user->save();
 			Session::flash('message', 'Created with success!');
 			return Redirect::route('users.index');

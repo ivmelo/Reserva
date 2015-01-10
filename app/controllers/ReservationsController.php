@@ -2,6 +2,10 @@
 
 class ReservationsController extends \BaseController {
 
+	public function __construct() {
+		//$this->beforeFilter('auth');
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -14,8 +18,15 @@ class ReservationsController extends \BaseController {
 		$requests
 		return $requests;//View::make('requests.index');*/
 
-		$reservations = Reservation::paginate(30);
+		if(Auth::user()->is_admin) {
+			$reservations = Reservation::paginate(30);
+		} else {
+			$reservations = Reservation::where('user_id', '=', Auth::user()->id)->paginate(30);
+		}
+
+		//$reservations = Reservation::paginate(30);
 		return View::make('reservations.index', ['reservations' => $reservations]);
+		//return Auth::user()->first_name;
 	}
 
 
@@ -70,8 +81,6 @@ class ReservationsController extends \BaseController {
 			return Redirect::route('reservations.index');
 		}
 
-
-		
 	}
 
 
@@ -85,6 +94,17 @@ class ReservationsController extends \BaseController {
 	{
 		//
 		$reservation = Reservation::find($id);
+
+		// Forbidding users to access other reservations
+		// that doesn't belong to them
+		if (! Auth::user()->is_admin) 
+		{
+			if ($reservation->user->id != Auth::user()->id) 
+			{
+				return Redirect::to(URL::route('reservations.index'))->with('message', 'You don\'t have permission to access that page!');			
+			}
+		}
+		
 		return View::make('reservations.show', compact('reservation'));
 	}
 
@@ -160,6 +180,25 @@ class ReservationsController extends \BaseController {
 		Session::flash('message', 'Deleted with success!');
 
 		return Redirect::route('reservations.index');
+	}
+
+	/**
+	 * Return the amount of reserved itens within
+	 * a given date interval and an Item id
+	 *
+	 * @param  string  $start_date
+	 * @param  String  $end_date
+	 * @return Response
+	 */
+	private function getBusyItems($start_date, $end_date, $item_id)
+	{
+		// Essa é a maior gambiarra que eu já fiz, mas acho que funciona bem,
+		// por favor, não me peça para explicar pq eu não sei, :P
+		$busy = Reservation::whereRaw('((end_date between "' . $start_date . '" and "' . $end_date . '") '
+			.'or (start_date between "' . $start_date . '" and "' . $end_date . '") '
+			.'or (start_date < "' . $start_date . '" and end_date > "' . $end_date . '"))')->where('item_id', '=', $item_id)->count();
+
+		return $busy;
 	}
 
 

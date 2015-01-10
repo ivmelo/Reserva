@@ -18,6 +18,8 @@ class CreateUsersMigration extends Migration {
 			$table->string('first_name');
 			$table->string('last_name');
 			$table->string('email');
+			$table->string('password')->nullable();
+			$table->string('remember_token')->nullable();
 			$table->boolean('is_admin');
 			$table->timestamps();
 		});

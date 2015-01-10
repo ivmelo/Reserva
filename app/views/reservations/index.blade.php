@@ -16,7 +16,7 @@
 <table class="table table-striped">
 	<thead>
 	<tr>
-		<th>#id</th>
+		<th>#</th>
 		<th>Item</th>
 		<th>From</th>
 		<th>To</th>
@@ -32,8 +32,8 @@
 	<tr>
 		<td>{{ $reservation->id }}</td>
 		<td>{{ $reservation->item->name }}</td>
-		<td>{{ $reservation->start_date }}</td>
-		<td>{{ $reservation->end_date }}</td>
+		<td>{{ $reservation->start_date->format('M d, Y h:i a') }}</td>
+		<td>{{ $reservation->end_date->format('M d, Y h:i a') }}</td>
 		<td>{{ Str::words($reservation->message, 8) }}</td>
 		<td>{{ $reservation->user->first_name }} {{ $reservation->user->last_name }}</td>
 		<td><span class="badge">{{ $reservation->status }}</span></td>

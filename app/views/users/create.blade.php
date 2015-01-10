@@ -27,12 +27,26 @@
 
 	<div class="checkbox">
 		<label>
-        	{{ Form::checkbox('is_admin') }} Make admin
+        	{{ Form::checkbox('is_admin', 1, null, ['id' => 'is_adm_checkbox']) }} Make admin
 		</label>
     </div>
+
+    <div class="form-group hidden" id="password_field">
+		{{ Form::label('password', 'Password') }}
+		{{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Password')) }}
+		{{ $errors->first('password') }}
+	</div>
 
 	{{ Form::submit('Create!', array('class' => 'btn btn-success btn-lg')) }}		
 
 {{ Form::close() }}
 
+@stop
+
+@section('scripts')
+<script type="text/javascript">
+	$('#is_adm_checkbox').click(function(){
+		$('#password_field').toggleClass('hidden', null, 400);
+	});
+</script>
 @stop

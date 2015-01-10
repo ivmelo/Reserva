@@ -2,7 +2,7 @@
 
 @section('content')
 
-<h1 class="page-header">{{ $user->first_name }}'s details</h1>
+<h1 class="page-header">{{ $user->first_name }} {{ $user->last_name }}'s details</h1>
 
 <div class="row">
 	<div class="col-md-2">
@@ -22,7 +22,7 @@
 		
 		
 	</div>
-	<div class="col-md-10">
+	<div class="col-md-5">
 		<dl>
 			<dt>User #Id</dt>
 	 		<dd>{{ $user->id }}</dd>
@@ -40,13 +40,21 @@
 	  		</dd>
 	  	</dl>
 	</div>
+	<div class="col-md-5">
+		<dl>
+			<dt>Created on</dt>
+	 		<dd>{{ $user->created_at->format('M d, Y h:i a') }}</dd>
+			<dt>Updated on</dt>
+	 		<dd>{{ $user->updated_at->format('M d, Y h:i a') }}</dd>
+	  	</dl>
+	</div>
 </div>
 
 </table>
 
 @if(count($user->reservations) > 0)
 
-<h3 class="sub-header">{{ $user->first_name }}'s  request history ({{ count($user->reservations) }})</h3>
+<h3 class="sub-header">{{ $user->first_name }}'s  reservation history ({{ count($user->reservations) }})</h3>
 
 <div class="table-responsive">
 <table class="table table-striped">
@@ -66,12 +74,12 @@
 	@foreach($user->reservations as $reservation)
 	<tr>
 		<td>{{ $reservation->item->name }}</td>
-		<td>{{ $reservation->start_date }}</td>
-		<td>{{ $reservation->end_date }}</td>
+		<td>{{ $reservation->start_date->format('M d, Y h:i a') }}</td>
+		<td>{{ $reservation->end_date->format('M d, Y h:i a') }}</td>
 		<td>{{ Str::words($reservation->message, 8) }}</td>
 		<td>{{ $reservation->status}}</td>
-		<td>{{ $reservation->created_at }}</td>
-		<td>{{ $reservation->updated_at }}</td>
+		<td>{{ $reservation->created_at->format('M d, Y h:i a') }}</td>
+		<td>{{ $reservation->updated_at->format('M d, Y h:i a') }}</td>
 	</tr>
 	@endforeach
 	</tbody>

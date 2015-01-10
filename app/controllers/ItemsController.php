@@ -10,6 +10,8 @@ class ItemsController extends \BaseController {
 	public function index()
 	{
 		//
+		$items = Item::all();
+		return View::make('items.index', compact('items'));
 	}
 
 
@@ -44,6 +46,8 @@ class ItemsController extends \BaseController {
 	public function show($id)
 	{
 		//
+		$item = Item::find($id);
+		return View::make('items.show', compact('item'));
 	}
 
 

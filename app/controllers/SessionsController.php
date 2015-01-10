@@ -32,7 +32,17 @@ class SessionsController extends \BaseController {
 	 */
 	public function store()
 	{
-		// create session and let user login
+		
+			// create session and let user login
+			if (Auth::attempt(array('email' => Input::get('email'), 'password' => Input::get('password')))) {
+				return Redirect::intended('reservations');
+			} else {
+				Session::flash('message', 'Wrong Email/Password combination.');
+				return Redirect::to('login')->withInput();
+			}
+		
+
+		
 	}
 
 
@@ -78,9 +88,12 @@ class SessionsController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy()
 	{
 		// logout user
+		Auth::logout();
+
+		return Redirect::to(URL::route('sessions.create'));
 	}
 
 

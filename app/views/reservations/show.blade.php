@@ -22,14 +22,14 @@
 
 	<div class="col-md-5">
 		<dt></dt>
-			<dt>Res#Id</dt>
+			<dt>#</dt>
 	 		<dd>{{ $reservation->id }}</dd>
 			<dt>User</dt>
 	 		<dd>{{ $reservation->user->first_name }} {{ $reservation->user->last_name }}</dd>
 	 		<dt>From</dt>
-	 		<dd>{{ $reservation->start_date }}</dd>
+	 		<dd>{{ $reservation->start_date->format('M d, Y h:i a') }}</dd>
 	 		<dt>To</dt>
-	 		<dd>{{ $reservation->end_date }}</dd>
+	 		<dd>{{ $reservation->end_date->format('M d, Y h:i a') }}</dd>
 	</div>
 
 	<div class="col-md-5">
@@ -37,9 +37,11 @@
 	 		<dt>Status</dt>
 	 		<dd>{{ $reservation->status }}</dd>
 	 		<dt>Created at</dt>
-	 		<dd>{{ $reservation->created_at }}</dd>
+	 		<dd>{{ $reservation->created_at->format('M d, Y h:i a') }}</dd>
 	 		<dt>Updated at</dt>
-	 		<dd>{{ $reservation->updated_at }}</dd>
+	 		<dd>{{ $reservation->updated_at->format('M d, Y h:i a') }}</dd>
+	 		<dt>Return time</dt>
+	 		<dd>{{ $reservation->end_date->diffForHumans($reservation->start_date) }} pick up</dd>
 	  	</dl>
 	</div>
 </div>

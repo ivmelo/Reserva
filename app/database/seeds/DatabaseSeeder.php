@@ -98,19 +98,23 @@ Class UserTableSeeder extends Seeder {
 		$faker = Faker\Factory::create();
 
 		for ($i = 0; $i < 100; $i++) {
+			$fname = $faker->firstName;
+			$lname = $faker->lastName;
+			$email = strtolower($fname) . '.' . strtolower($lname) . '@vieiralabs.com';
 			User::create(array(
-				'first_name' =>  $faker->firstName,
-				'last_name' => $faker->lastName,
-				'email' => $faker->email,
+				'first_name' =>  $fname,
+				'last_name' => $lname,
+				'email' => $email,
+				'password' => Hash::make(''),
 				'is_admin' => '0'
 			));
 		}
-		
 
 		User::create(array(
 			'first_name' =>  'Ivan',
 			'last_name' => 'Melo',
 			'email' => 'ivan@vieiralabs.com',
+			'password' => Hash::make('password'),
 			'is_admin' => '1'
 		));
 

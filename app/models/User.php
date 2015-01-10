@@ -28,4 +28,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->hasMany('Reservation');
 	}
 
+	public function getDates()
+	{
+		return array('created_at', 'updated_at', 'start_date', 'end_date');
+	}
+
+	public function fullName()
+	{
+		return $this->first_name . ' ' . $this->last_name;
+	}
+
+
 }

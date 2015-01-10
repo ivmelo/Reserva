@@ -12,4 +12,9 @@ class Reservation extends Eloquent {
 		return $this->belongsTo('Item');
 	}
 
+	public function getDates()
+	{
+		return array('created_at', 'updated_at', 'start_date', 'end_date');
+	}
+
 }
